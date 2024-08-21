@@ -1,0 +1,19 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: no-access-llm
+rules: []
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: llm-sa-rolebinding
+subjects:
+- kind: ServiceAccount
+  name: llm-service-account
+  namespace: {{.Values.namespace}}
+roleRef:
+  kind: ClusterRole
+  name: no-access-llm
+  apiGroup: rbac.authorization.k8s.io

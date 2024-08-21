@@ -1,0 +1,4 @@
+namespace: llm-namespace
+container:
+  name: llm-backend-container
+  image: eashanroy7866/llm:1.0.2
