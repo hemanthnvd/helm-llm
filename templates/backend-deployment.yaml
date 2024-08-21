@@ -1,0 +1,60 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: llm-deployment
+  namespace: {{.Values.namespace}}
+  labels:
+    app: llm
+spec:
+  serviceAccountName: llm-service-account
+  automountServiceAccountToken: false
+  replicas: 1
+  selector:
+    matchLabels:
+      app: llm
+  template:
+    metadata:
+      labels:
+        app: llm
+    spec:
+      containers:
+        - name: {{.Values.container.name}}
+          image: {{.Values.container.image}}
+          ports:
+          - containerPort: 5000
+          # resources:
+          #   requests:
+          #     memory: "450Mi"
+          #     cpu: "1000m"
+          #   limits:
+          #     memory: "600Mi"
+          #     cpu: "1200m"
+          imagePullPolicy: Always
+          env:
+          - name: pinecone_api_key
+            valueFrom:
+              secretKeyRef:
+                name: llm-secret
+                key: pinecone_api_key
+          - name: groc_api_key
+            valueFrom:
+              secretKeyRef:
+                name: llm-secret
+                key: groc_api_key
+          # readinessProbe:
+          #   httpGet:
+          #     path: /readiness
+          #     port: 8080
+          #   initialDelaySeconds: 30
+          #   periodSeconds: 30
+          #   failureThreshold: 2
+          # livenessProbe:
+          #   httpGet:
+          #     path: /liveness
+          #     port: 8080
+          #   initialDelaySeconds: 30
+          #   periodSeconds: 20
+          #   failureThreshold: 2
+      imagePullSecrets:
+        - name: registrypullsecret

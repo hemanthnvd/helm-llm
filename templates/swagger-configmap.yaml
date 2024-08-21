@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: swagger-config
+  namespace: llm-namespace
+data:
+  swagger.yaml: |
+    openapi: 3.0.0
+    info:
+      title: Ask API
+      version: 1.0.0
+    servers:
+      - url: https://api.eashanroy.me
+        description: Backend server
+        variables:
+          backend-host:
+            default: https://api.eashanroy.me
+    paths:
+      /ask:
+        post:
+          summary: Ask a question
+          requestBody:
+            required: true
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    question:
+                      type: string
+                      example: "whats the temperature of boston"
+          responses:
+            '200':
+              description: Successful response
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      answer:
+                        type: string
+                        example: "I do not know the answer. The provided context appears to be related to CVE (Common Vulnerabilities and Exposures) data, which contains information about security vulnerabilities in software products. There is no mention of Boston or temperature in the provided context."
+            '400':
+              description: Bad request
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        example: "No question provided"
+            '500':
+              description: Internal server error
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        example: "Internal server error"
